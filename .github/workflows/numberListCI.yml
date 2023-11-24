@@ -13,22 +13,24 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Set up environment
+      shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
+        if [[ $RUNNER_OS == "Linux" ]]; then
           sudo apt-get update
           sudo apt-get install g++ -y
-        elif [ "$RUNNER_OS" == "macOS" ]; then
+        elif [[ $RUNNER_OS == "macOS" ]]; then
           brew install gcc
-        elif [ "$RUNNER_OS" == "Windows" ]; then
+        elif [[ $RUNNER_OS == "Windows" ]]; then
           choco install mingw
         fi
 
     - name: Compile and Run Tests
+      shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          g++ -std=c++11 -o NumberListTest.exe NumberListTest.cpp
-          .\NumberListTest.exe
+        if [[ $RUNNER_OS == "Windows" ]]; then
+          g++ NumberList.cpp NumberListTest.cpp -o NumberListTest.exe
+          ./NumberListTest.exe
         else
-          g++ -std=c++11 -o NumberListTest NumberListTest.cpp
+          g++ NumberList.cpp NumberListTest.cpp -o NumberListTest
           ./NumberListTest
         fi
