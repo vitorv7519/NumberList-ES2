@@ -1,0 +1,34 @@
+name: Aula Pratica 5 CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up environment
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          sudo apt-get update
+          sudo apt-get install g++ -y
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          brew install gcc
+        elif [ "$RUNNER_OS" == "Windows" ]; then
+          choco install mingw
+        fi
+
+    - name: Compile and Run Tests
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          g++ -std=c++11 -o NumberListTest.exe NumberListTest.cpp
+          .\NumberListTest.exe
+        else
+          g++ -std=c++11 -o NumberListTest NumberListTest.cpp
+          ./NumberListTest
+        fi
